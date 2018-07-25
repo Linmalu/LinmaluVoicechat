@@ -38,7 +38,6 @@ public class VoicechatServer implements Runnable
 		}
 		catch(Exception e)
 		{
-			// e.printStackTrace();
 		}
 	}
 }

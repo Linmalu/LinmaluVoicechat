@@ -1,7 +1,7 @@
 package com.linmalu.voicechat;
 
 import com.linmalu.library.api.LinmaluMain;
-import com.linmalu.voicechat.data.GameData;
+import com.linmalu.voicechat.data.VoicechatClientManager;
 import com.linmalu.voicechat.data.VoicechatServer;
 
 public class Main extends LinmaluMain
@@ -11,14 +11,14 @@ public class Main extends LinmaluMain
 		return (Main)LinmaluMain.getMain();
 	}
 
-	private GameData gamedata;
+	private VoicechatClientManager manager;
 	private VoicechatServer server;
 
 	@Override
 	public void onEnable()
 	{
 		super.onEnable();
-		gamedata = new GameData();
+		manager = new VoicechatClientManager();
 		registerCommand(new Main_Command());
 		registerEvents(new Main_Event());
 		server = new VoicechatServer();
@@ -27,11 +27,11 @@ public class Main extends LinmaluMain
 	public void onDisable()
 	{
 		super.onDisable();
+		manager.clear();
 		server.close();
-		gamedata.closePlayers();
 	}
-	public GameData getGameData()
+	public VoicechatClientManager getVoicechatClientManager()
 	{
-		return gamedata;
+		return manager;
 	}
 }

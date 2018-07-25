@@ -1,6 +1,5 @@
 package com.linmalu.voicechat;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -10,12 +9,12 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import com.linmalu.library.api.LinmaluVersion;
-import com.linmalu.voicechat.data.GameData;
+import com.linmalu.library.api.LinmaluServer;
+import com.linmalu.voicechat.data.VoicechatClientManager;
 
 public class Main_Event implements Listener
 {
-	private final GameData data = Main.getMain().getGameData();
+	private final VoicechatClientManager vcm = Main.getMain().getVoicechatClientManager();
 
 	@EventHandler
 	public void Event(PlayerJoinEvent event)
@@ -23,36 +22,29 @@ public class Main_Event implements Listener
 		Player player = event.getPlayer();
 		if(player.isOp())
 		{
-			LinmaluVersion.check(Main.getMain(), player);
+			LinmaluServer.version(Main.getMain(), player);
 		}
-		if(data.isDistance())
-		{
-			data.changeLocation(player.getUniqueId(), player.getLocation());
-		}
+		vcm.joinPlayer(player);
 	}
 	@EventHandler
 	public void Event(PlayerQuitEvent event)
 	{
-		if(data.isDistance())
-		{
-			Player player = event.getPlayer();
-			data.changeLocation(player.getUniqueId(), new Location(player.getWorld(), 0, -1000, 0, 0, 0));
-		}
+		vcm.quitPlayer(event.getPlayer());
 	}
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void Event(PlayerTeleportEvent event)
 	{
-		if(data.isDistance())
+		if(vcm.isRun())
 		{
-			data.changeLocation(event.getPlayer().getUniqueId(), event.getTo());
+			vcm.changeLocation(event.getPlayer().getUniqueId(), event.getTo());
 		}
 	}
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void Event(PlayerMoveEvent event)
 	{
-		if(data.isDistance())
+		if(vcm.isRun())
 		{
-			data.changeLocation(event.getPlayer().getUniqueId(), event.getTo());
+			vcm.changeLocation(event.getPlayer().getUniqueId(), event.getTo());
 		}
 	}
 }
