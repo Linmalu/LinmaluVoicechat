@@ -36,6 +36,7 @@ public enum VoicechatPacketType
 	{
 		this.id = id;
 	}
+
 	public int getID()
 	{
 		return id;

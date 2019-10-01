@@ -1,11 +1,10 @@
 package com.linmalu.voicechat.data;
 
-import java.net.ServerSocket;
-
+import com.linmalu.voicechat.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
-import com.linmalu.voicechat.Main;
+import java.net.ServerSocket;
 
 public class VoicechatServer implements Runnable
 {
@@ -15,6 +14,7 @@ public class VoicechatServer implements Runnable
 	{
 		new Thread(this).start();
 	}
+
 	public void run()
 	{
 		try(ServerSocket server = new ServerSocket(23456))
@@ -27,9 +27,10 @@ public class VoicechatServer implements Runnable
 		}
 		catch(Exception e)
 		{
-			Bukkit.getConsoleSender().sendMessage(Main.getMain().getTitle() + ChatColor.YELLOW + "에러가 발생되어 종료됩니다.");
+			Bukkit.getConsoleSender().sendMessage(Main.getInstance().getTitle() + ChatColor.YELLOW + "에러가 발생되어 종료됩니다.");
 		}
 	}
+
 	public void close()
 	{
 		try

@@ -1,17 +1,16 @@
 package com.linmalu.voicechat.data;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
+import com.linmalu.voicechat.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.linmalu.voicechat.Main;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class VoicechatClientManager
 {
@@ -33,6 +32,7 @@ public class VoicechatClientManager
 			}
 		}
 	}
+
 	// 음성채팅 거리 변경
 	public void changeDistance(float distance)
 	{
@@ -42,17 +42,13 @@ public class VoicechatClientManager
 			vc.setDistance(distance, 0);
 		}
 	}
+
 	// 클라이언트 접속확인
 	public void checkClient()
 	{
-		for(Iterator<VoicechatClient> it = clients.iterator(); it.hasNext();)
-		{
-			if(it.next().isClose())
-			{
-				it.remove();
-			}
-		}
+		clients.removeIf(VoicechatClient::isClose);
 	}
+
 	// 팀스피크플러그인 서버연결
 	public void connect(VoicechatClient vc)
 	{
@@ -62,6 +58,7 @@ public class VoicechatClientManager
 		vc.changeMute(run);
 		vc.changeLocation(vc.getClientID(), new Location(null, 0, 0, 0, 0, 0));
 	}
+
 	// 팀스피크플러그인 서버연결종료
 	public void disconnect(VoicechatClient vc)
 	{
@@ -74,7 +71,7 @@ public class VoicechatClientManager
 				Player player = Bukkit.getPlayer(uuid);
 				if(player != null)
 				{
-					player.sendMessage(Main.getMain().getTitle() + ChatColor.GOLD + name + ChatColor.YELLOW + "님이 통화신청을 취소했습니다.");
+					player.sendMessage(Main.getInstance().getTitle() + ChatColor.GOLD + name + ChatColor.YELLOW + "님이 통화신청을 취소했습니다.");
 				}
 			}
 			for(UUID id : vc.callPlayers)
@@ -82,7 +79,7 @@ public class VoicechatClientManager
 				Player player = Bukkit.getPlayer(id);
 				if(player != null)
 				{
-					player.sendMessage(Main.getMain().getTitle() + ChatColor.GOLD + name + ChatColor.YELLOW + "님이 통화신청을 취소했습니다.");
+					player.sendMessage(Main.getInstance().getTitle() + ChatColor.GOLD + name + ChatColor.YELLOW + "님이 통화신청을 취소했습니다.");
 				}
 			}
 			Set<UUID> set = quitClient(vc.getPlayer());
@@ -102,25 +99,27 @@ public class VoicechatClientManager
 					Player player2 = Bukkit.getPlayer(id);
 					if(player2 != null)
 					{
-						player2.sendMessage(Main.getMain().getTitle() + ChatColor.GOLD + name + ChatColor.GREEN + "님이 통화를 종료했습니다.");
-						player2.sendMessage(Main.getMain().getTitle() + msg);
+						player2.sendMessage(Main.getInstance().getTitle() + ChatColor.GOLD + name + ChatColor.GREEN + "님이 통화를 종료했습니다.");
+						player2.sendMessage(Main.getInstance().getTitle() + msg);
 					}
 				}
 			}
 			Player player = Bukkit.getPlayer(vc.getPlayer());
 			if(player != null)
 			{
-				player.sendMessage(Main.getMain().getTitle() + ChatColor.YELLOW + "음성채팅 클라이언트가 종료되었습니다.");
+				player.sendMessage(Main.getInstance().getTitle() + ChatColor.YELLOW + "음성채팅 클라이언트가 종료되었습니다.");
 			}
 		}
 		checkClient();
 		clients.remove(vc);
 	}
+
 	// 음성거리채팅 작동확인
 	public boolean isRun()
 	{
 		return run;
 	}
+
 	// 비밀번호 확인
 	public boolean checkPassword(Player player, String password)
 	{
@@ -142,6 +141,7 @@ public class VoicechatClientManager
 		}
 		return false;
 	}
+
 	// 플레이어 접속
 	public void joinPlayer(Player player)
 	{
@@ -166,6 +166,7 @@ public class VoicechatClientManager
 			}
 		}
 	}
+
 	// 플레이어 종료
 	public void quitPlayer(Player player)
 	{
@@ -182,6 +183,7 @@ public class VoicechatClientManager
 			}
 		}
 	}
+
 	// 플레이어 위치변경
 	public void changeLocation(UUID player, Location loc)
 	{
@@ -197,6 +199,7 @@ public class VoicechatClientManager
 			}
 		}
 	}
+
 	// 음악 재생
 	public void playMusic(Player player, String msg)
 	{
@@ -210,6 +213,7 @@ public class VoicechatClientManager
 			}
 		}
 	}
+
 	// 음악 종료
 	public void stopMusic(UUID player)
 	{
@@ -222,6 +226,7 @@ public class VoicechatClientManager
 			}
 		}
 	}
+
 	// 플레이어 확인
 	public boolean isPlayer(UUID player)
 	{
@@ -234,6 +239,7 @@ public class VoicechatClientManager
 		}
 		return false;
 	}
+
 	// 통화 신청
 	public boolean callPlayer(UUID player1, UUID player2)
 	{
@@ -273,6 +279,7 @@ public class VoicechatClientManager
 		}
 		return false;
 	}
+
 	// 통화 신청 취소
 	public UUID cancelPlayer(UUID player)
 	{
@@ -285,6 +292,7 @@ public class VoicechatClientManager
 		}
 		return null;
 	}
+
 	// 통화 신청 거절
 	public boolean refusePlayer(UUID player1, UUID player2)
 	{
@@ -297,6 +305,7 @@ public class VoicechatClientManager
 		}
 		return false;
 	}
+
 	// 통화 종료
 	public Set<UUID> quitClient(UUID player)
 	{
@@ -319,6 +328,7 @@ public class VoicechatClientManager
 		}
 		return null;
 	}
+
 	// 통화 신청 플레이어
 	public UUID getCallPlayer(UUID player)
 	{
@@ -331,6 +341,7 @@ public class VoicechatClientManager
 		}
 		return null;
 	}
+
 	// 통화 신청한 플레이어
 	public Set<UUID> getCallPlayers(UUID player)
 	{
@@ -343,6 +354,7 @@ public class VoicechatClientManager
 		}
 		return null;
 	}
+
 	// 통화 신청 가능 플레이어
 	public Set<String> getCallPlayerNames(UUID player)
 	{
@@ -361,6 +373,7 @@ public class VoicechatClientManager
 		set.removeAll(getPlayers(player).stream().map(uuid -> Bukkit.getOfflinePlayer(uuid).getName()).collect(Collectors.toSet()));
 		return set;
 	}
+
 	// 통화 거절 가능 플레이어
 	public Set<String> getRefusePlayerNames(UUID player)
 	{
@@ -373,6 +386,7 @@ public class VoicechatClientManager
 		}
 		return null;
 	}
+
 	// 통화 목록
 	public Set<UUID> getPlayers(UUID player)
 	{
@@ -380,11 +394,12 @@ public class VoicechatClientManager
 		{
 			if(vc.isPlayer(player))
 			{
-				return new HashSet<UUID>(vc.players);
+				return new HashSet<>(vc.players);
 			}
 		}
 		return null;
 	}
+
 	// 통화 변경
 	private void refreshPlayer()
 	{
@@ -400,10 +415,11 @@ public class VoicechatClientManager
 			}
 		}
 	}
+
 	// 정리
 	public void clear()
 	{
-		for(Iterator<VoicechatClient> it = clients.iterator(); it.hasNext();)
+		for(Iterator<VoicechatClient> it = clients.iterator(); it.hasNext(); )
 		{
 			it.next().close();
 			it.remove();

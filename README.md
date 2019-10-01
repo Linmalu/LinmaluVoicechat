@@ -4,7 +4,7 @@
  - HomePage : http://blog.linmalu.com/
  - Language : JAVA8
  - Spigot : spigot-api-1.12.2-R0.1-SNAPSHOT-shaded
- - Version : 1.12.2.0
+ - Version : 1.12.2.1
 
 ###업데이트
 - LinmaluMinecraftVoicechatPlugin​플러그인 2.0버전부터 사용 가능

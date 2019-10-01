@@ -6,9 +6,9 @@ import com.linmalu.voicechat.data.VoicechatServer;
 
 public class Main extends LinmaluMain
 {
-	public static Main getMain()
+	public static Main getInstance()
 	{
-		return (Main)LinmaluMain.getMain();
+		return (Main)LinmaluMain.getInstance();
 	}
 
 	private VoicechatClientManager manager;
@@ -19,10 +19,11 @@ public class Main extends LinmaluMain
 	{
 		super.onEnable();
 		manager = new VoicechatClientManager();
-		registerCommand(new Main_Command());
-		registerEvents(new Main_Event());
+		new Main_Command(this);
+		new Main_Event(this);
 		server = new VoicechatServer();
 	}
+
 	@Override
 	public void onDisable()
 	{
@@ -30,6 +31,7 @@ public class Main extends LinmaluMain
 		manager.clear();
 		server.close();
 	}
+
 	public VoicechatClientManager getVoicechatClientManager()
 	{
 		return manager;

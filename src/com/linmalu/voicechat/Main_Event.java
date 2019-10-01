@@ -1,46 +1,54 @@
 package com.linmalu.voicechat;
 
+import com.linmalu.library.api.LinmaluEvent;
+import com.linmalu.library.api.LinmaluMain;
+import com.linmalu.library.api.LinmaluServer;
+import com.linmalu.voicechat.data.VoicechatClientManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import com.linmalu.library.api.LinmaluServer;
-import com.linmalu.voicechat.data.VoicechatClientManager;
-
-public class Main_Event implements Listener
+public class Main_Event extends LinmaluEvent
 {
-	private final VoicechatClientManager vcm = Main.getMain().getVoicechatClientManager();
+	private final VoicechatClientManager vcm = Main.getInstance().getVoicechatClientManager();
+
+	public Main_Event(LinmaluMain main)
+	{
+		super(main);
+	}
 
 	@EventHandler
-	public void Event(PlayerJoinEvent event)
+	public void event(PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
 		if(player.isOp())
 		{
-			LinmaluServer.version(Main.getMain(), player);
+			LinmaluServer.version(_main, player);
 		}
 		vcm.joinPlayer(player);
 	}
+
 	@EventHandler
-	public void Event(PlayerQuitEvent event)
+	public void event(PlayerQuitEvent event)
 	{
 		vcm.quitPlayer(event.getPlayer());
 	}
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void Event(PlayerTeleportEvent event)
+	public void event(PlayerTeleportEvent event)
 	{
 		if(vcm.isRun())
 		{
 			vcm.changeLocation(event.getPlayer().getUniqueId(), event.getTo());
 		}
 	}
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void Event(PlayerMoveEvent event)
+	public void event(PlayerMoveEvent event)
 	{
 		if(vcm.isRun())
 		{

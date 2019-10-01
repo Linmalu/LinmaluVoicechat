@@ -1,5 +1,12 @@
 package com.linmalu.voicechat.data;
 
+import com.linmalu.voicechat.Main;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -9,14 +16,6 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
-
-import com.linmalu.voicechat.Main;
 
 public class VoicechatClient implements Runnable
 {
@@ -36,6 +35,7 @@ public class VoicechatClient implements Runnable
 		this.client = client;
 		new Thread(this).start();
 	}
+
 	// 팀스피크 플러그인 연결
 	public void run()
 	{
@@ -52,7 +52,7 @@ public class VoicechatClient implements Runnable
 						client.close();
 					}
 				}
-				catch(Exception e)
+				catch(Exception ignored)
 				{
 				}
 			}).start();
@@ -75,15 +75,15 @@ public class VoicechatClient implements Runnable
 				buffer.get(message);
 				version = new String(message, Charset.forName("EUC-KR"));
 			}
-			password = new String();
+			password = "";
 			Random r = new Random();
 			for(int i = 0; i < 10; i++)
 			{
 				password += passwords[r.nextInt(passwords.length)];
 			}
 			sendMessage("/LinmaluVoicechat 비밀번호 " + password);
-			Main.getMain().getVoicechatClientManager().connect(this);
-			Bukkit.getConsoleSender().sendMessage(Main.getMain().getTitle() + ChatColor.GOLD + client.getInetAddress().getHostAddress() + ChatColor.YELLOW + " - 연결");
+			Main.getInstance().getVoicechatClientManager().connect(this);
+			Bukkit.getConsoleSender().sendMessage(Main.getInstance().getTitle() + ChatColor.GOLD + client.getInetAddress().getHostAddress() + ChatColor.YELLOW + " - 연결");
 			while(true)
 			{
 				buffer = ByteBuffer.allocate(in.readInt());
@@ -94,7 +94,7 @@ public class VoicechatClient implements Runnable
 				{
 					byte[] message = new byte[buffer.limit() - buffer.position()];
 					buffer.get(message);
-					Bukkit.getConsoleSender().sendMessage(Main.getMain().getTitle() + ChatColor.GOLD + player + ChatColor.YELLOW + new String(message, Charset.forName("EUC-KR")));
+					Bukkit.getConsoleSender().sendMessage(Main.getInstance().getTitle() + ChatColor.GOLD + player + ChatColor.YELLOW + new String(message, Charset.forName("EUC-KR")));
 				}
 				else if(type == VoicechatPacketType.PLAYER_MESSAGE.getID())
 				{
@@ -105,24 +105,25 @@ public class VoicechatClient implements Runnable
 						{
 							byte[] message = new byte[buffer.limit() - buffer.position()];
 							buffer.get(message);
-							p.sendMessage(Main.getMain().getTitle() + ChatColor.YELLOW + new String(message, Charset.forName("EUC-KR")));
+							p.sendMessage(Main.getInstance().getTitle() + ChatColor.YELLOW + new String(message, Charset.forName("EUC-KR")));
 						}
 					}
 				}
 				else if(type == VoicechatPacketType.JOIN_CLIENT.getID())
 				{
-					changeMute(buffer.getInt(), Main.getMain().getVoicechatClientManager().isRun());
+					changeMute(buffer.getInt(), Main.getInstance().getVoicechatClientManager().isRun());
 				}
 			}
 		}
 		catch(Exception e)
 		{
 			// e.printStackTrace();
-			Bukkit.getConsoleSender().sendMessage(Main.getMain().getTitle() + ChatColor.GOLD + client.getInetAddress().getHostAddress() + ChatColor.YELLOW + " - 연결종료");
-			Main.getMain().getVoicechatClientManager().disconnect(this);
+			Bukkit.getConsoleSender().sendMessage(Main.getInstance().getTitle() + ChatColor.GOLD + client.getInetAddress().getHostAddress() + ChatColor.YELLOW + " - 연결종료");
+			Main.getInstance().getVoicechatClientManager().disconnect(this);
 			close();
 		}
 	}
+
 	// 메세지 보내기
 	public void sendMessage(String msg)
 	{
@@ -132,6 +133,7 @@ public class VoicechatClient implements Runnable
 		buffer.put(msgs);
 		sendPacket(buffer.array());
 	}
+
 	// 들리는 거리 보내기
 	public void setDistance(float distanceFactor, float rolloffScale)
 	{
@@ -141,6 +143,7 @@ public class VoicechatClient implements Runnable
 		buffer.putFloat(rolloffScale);
 		sendPacket(buffer.array());
 	}
+
 	// 플레이어 위치 보내기
 	public void changeLocation(int clientID, Location loc)
 	{
@@ -168,6 +171,7 @@ public class VoicechatClient implements Runnable
 		}
 		sendPacket(buffer.array());
 	}
+
 	// 플레이어 음소거
 	public void changeMute(int clientID, boolean mute)
 	{
@@ -176,6 +180,7 @@ public class VoicechatClient implements Runnable
 		buffer.putInt(clientID);
 		sendPacket(buffer.array());
 	}
+
 	// 전체 음소거
 	public void changeMute(boolean mute)
 	{
@@ -183,6 +188,7 @@ public class VoicechatClient implements Runnable
 		buffer.putInt(mute ? VoicechatPacketType.ALL_MUTE.getID() : VoicechatPacketType.ALL_UNMUTE.getID());
 		sendPacket(buffer.array());
 	}
+
 	// 음악 재생
 	public void playMusic(String msg)
 	{
@@ -192,6 +198,7 @@ public class VoicechatClient implements Runnable
 		buffer.put(msgs);
 		sendPacket(buffer.array());
 	}
+
 	// 음악 종료
 	public void stopMusic()
 	{
@@ -199,6 +206,7 @@ public class VoicechatClient implements Runnable
 		buffer.putInt(VoicechatPacketType.STOP_MUSIC.getID());
 		sendPacket(buffer.array());
 	}
+
 	// 음악 위치
 	public void locMusic(Location loc)
 	{
@@ -209,6 +217,7 @@ public class VoicechatClient implements Runnable
 		buffer.putFloat((float)loc.getZ());
 		sendPacket(buffer.array());
 	}
+
 	// 패킷 보내기
 	private void sendPacket(byte[] data)
 	{
@@ -221,10 +230,11 @@ public class VoicechatClient implements Runnable
 		}
 		catch(Exception e)
 		{
-			Main.getMain().getVoicechatClientManager().disconnect(this);
+			Main.getInstance().getVoicechatClientManager().disconnect(this);
 			close();
 		}
 	}
+
 	// 패킷 암호화 및 복호화
 	private void converterData(byte[] data)
 	{
@@ -235,14 +245,17 @@ public class VoicechatClient implements Runnable
 			count = ++count % 4;
 		}
 	}
+
 	public int getClientID()
 	{
 		return clientID;
 	}
+
 	public String getVersion()
 	{
 		return version;
 	}
+
 	public boolean checkPassword(Player player, String password)
 	{
 		if(client.getInetAddress().getHostAddress().equals(player.getAddress().getAddress().getHostAddress()) && this.password.equals(password))
@@ -252,22 +265,27 @@ public class VoicechatClient implements Runnable
 		}
 		return false;
 	}
+
 	public boolean isPlayer()
 	{
 		return player != null;
 	}
+
 	public boolean isPlayer(UUID player)
 	{
 		return this.player != null && this.player.equals(player);
 	}
+
 	public UUID getPlayer()
 	{
 		return player;
 	}
+
 	public boolean isClose()
 	{
 		return client.isClosed();
 	}
+
 	public void close()
 	{
 		try

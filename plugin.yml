@@ -1,0 +1,13 @@
+main: com.linmalu.voicechat.Main
+name: LinmaluVoicechat
+version: 1.12.2.1
+author: 린마루(Linmalu)
+website: http://blog.linmalu.com/
+description: LinmaluVoicechat
+depend: [ProtocolLib, LinmaluLibrary]
+
+commands:
+    LinmaluVoicechat:
+        description: LinmaluVoicechat
+        aliases: [lv, 음성]
+        usage: '명령어 : /<command>'
