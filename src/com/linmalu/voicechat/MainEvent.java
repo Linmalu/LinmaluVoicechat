@@ -12,11 +12,11 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-public class Main_Event extends LinmaluEvent
+public class MainEvent extends LinmaluEvent
 {
 	private final VoicechatClientManager vcm = Main.getInstance().getVoicechatClientManager();
 
-	public Main_Event(LinmaluMain main)
+	public MainEvent(LinmaluMain main)
 	{
 		super(main);
 	}

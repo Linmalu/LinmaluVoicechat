@@ -17,11 +17,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class Main_Command extends LinmaluCommand
+public class MainCommand extends LinmaluCommand
 {
 	private final VoicechatClientManager vcm = Main.getInstance().getVoicechatClientManager();
 
-	public Main_Command(LinmaluMain main)
+	public MainCommand(LinmaluMain main)
 	{
 		super(main);
 	}
@@ -358,10 +358,6 @@ public class Main_Command extends LinmaluCommand
 			LinmaluTellraw.sendChat(sender, "/" + label + " 음악종료 ", ChatColor.GOLD + "/" + label + " 음악종료" + ChatColor.GRAY + " : 컴퓨터음악종료");
 		}
 		sender.sendMessage(ChatColor.YELLOW + "제작자 : " + ChatColor.AQUA + "린마루(Linmalu)" + ChatColor.WHITE + " - http://blog.linmalu.com");
-		if(sender.isOp())
-		{
-			LinmaluServer.version(_main, sender);
-		}
 		return true;
 	}
 

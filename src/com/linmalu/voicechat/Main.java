@@ -19,8 +19,8 @@ public class Main extends LinmaluMain
 	{
 		super.onEnable();
 		manager = new VoicechatClientManager();
-		new Main_Command(this);
-		new Main_Event(this);
+		new MainCommand(this);
+		new MainEvent(this);
 		server = new VoicechatServer();
 	}
 
