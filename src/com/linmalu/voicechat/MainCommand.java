@@ -342,7 +342,7 @@ public class MainCommand extends LinmaluCommand
 		if(sender.isOp())
 		{
 			LinmaluTellraw.sendChat(sender, "/" + label + " 시작 ", ChatColor.GOLD + "/" + label + " 시작" + ChatColor.GRAY + " : 거리음성채팅시작");
-			LinmaluTellraw.sendChat(sender, "/" + label + " 중지 ", ChatColor.GOLD + "/" + label + " 중지" + ChatColor.GRAY + " : 거리음성채팅중지");
+			LinmaluTellraw.sendChat(sender, "/" + label + " 종료 ", ChatColor.GOLD + "/" + label + " 종료" + ChatColor.GRAY + " : 거리음성채팅종료");
 			LinmaluTellraw.sendChat(sender, "/" + label + " 거리 ", ChatColor.GOLD + "/" + label + " 거리 <범위>" + ChatColor.GRAY + " : 거리음성채팅 범위 설정");
 		}
 		if(sender instanceof Player)
